@@ -3,12 +3,28 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html">
     <h:head>
-        <title>Facelet Title</title>
+        <title>Account Balance</title>
     </h:head>
     <h:body>
-        <h:outputLabel value="THIS IS A PAGE THAT NORMAL USERS CAN ACCESS"/>
+        <h:outputLabel value="Welcome "/>
+        <h:outputLabel value="#{loginBean.activeUsername}"/>
         <br/>
-        <h:link value="Back to index" outcome="index"/>
+        <h:outputLabel value="Your account balance is: £"/>
+        <h:outputLabel value="#{loginBean.activeBalance}"/>
+        <br/>
+        <!-- <br/><h:link value="Back to index" outcome="index"/><br/> -->
+        <h:form>
+            View Transactions: <h:commandButton value="View Transactions" action="#{loginBean.logout}"/>
+            <br/>
+            Notifications: <h:commandButton value="Notifications" action="#{loginBean.logout}"/>
+            <br/>
+            Make Payment:  <h:commandButton value="Make Payment" action="#{loginBean.logout}"/>
+            <br/>
+            Request Payment:  <h:commandButton value="Request Payment" action="#{loginBean.logout}"/>
+            <br/>
+            Logout: <h:commandButton value="Logout" action="#{loginBean.logout}"/>
+            <br/>
+        </h:form>
     </h:body>
 </html>
 

@@ -1,22 +1,29 @@
 package com.webapps2022.ejb;
 
+import com.webapps2022.entity.Payment;
 import com.webapps2022.entity.SystemUser;
 import com.webapps2022.entity.SystemUserGroup;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Resource;
+import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 @Stateless
 public class UserService {
 
     @PersistenceContext
     EntityManager em;
+    @Resource
+    EJBContext ejbContext;
 
     public UserService() {
     }
@@ -35,14 +42,27 @@ public class UserService {
 
             // apart from the default constructor which is required by JPA
             // you need to also implement a constructor that will make the following code succeed
-            sys_user = new SystemUser(username, paswdToStoreInDB);
+            sys_user = new SystemUser(username, paswdToStoreInDB, "users");
             sys_user_group = new SystemUserGroup(username, "users");
 
             em.persist(sys_user);
             em.persist(sys_user_group);
-            
+
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException ex) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    //Returns the username of the logged in user
+    public String getUsername() {
+        String username = ejbContext.getCallerPrincipal().getName();
+        return username;
+    }
+
+    public Double getBalance() {
+        TypedQuery<Double> query
+                = em.createQuery("SELECT u.balance FROM SystemUser AS u WHERE u.username = " + '"' + getUsername() + '"', Double.class);
+        Double result = query.getSingleResult();
+        return result;
     }
 }

@@ -6,12 +6,12 @@
         <title>Webapps2022</title>
     </h:head>
     <h:body>
-        <h:link value="Go to a user page" outcome="user"/>
+        <h:outputLabel value="Webapps Assignment 2022"/>
         <br/>
-        ...or register <h:link value="here" outcome="registration"/>
-
-        <h:form>
-            Logout: <h:commandButton value="Logout" action="#{loginBean.logout}"/>
-        </h:form>
+        <h:outputLabel value="Candidate #198775"/>
+        <br/>
+        <h:link value="Login" outcome="user"/>
+        <br/>
+        <h:link value="Register" outcome="registration"/>
     </h:body>
 </html>
