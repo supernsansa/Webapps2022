@@ -7,10 +7,10 @@
     </h:head>
     <h:body>
         <h:outputLabel value="Welcome "/>
-        <h:outputLabel value="#{loginBean.activeUsername}"/>
+        <h:outputLabel value="#{userBean.activeUsername}"/>
         <br/>
         <h:outputLabel value="Your account balance is: £"/>
-        <h:outputLabel value="#{loginBean.activeBalance}"/>
+        <h:outputLabel value="#{userBean.activeBalance}"/>
         <br/>
         <!-- <br/><h:link value="Back to index" outcome="index"/><br/> -->
         <h:form>
@@ -18,7 +18,7 @@
             <br/>
             Notifications: <h:commandButton value="Notifications" action="#{loginBean.logout}"/>
             <br/>
-            Make Payment:  <h:commandButton value="Make Payment" action="#{loginBean.logout}"/>
+            Make Payment:  <h:commandButton value="Make Payment" action="sendMoney"/>
             <br/>
             Request Payment:  <h:commandButton value="Request Payment" action="#{loginBean.logout}"/>
             <br/>

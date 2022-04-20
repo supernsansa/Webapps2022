@@ -60,9 +60,55 @@ public class UserService {
     }
 
     public Double getBalance() {
-        TypedQuery<Double> query
-                = em.createQuery("SELECT u.balance FROM SystemUser AS u WHERE u.username = " + '"' + getUsername() + '"', Double.class);
-        Double result = query.getSingleResult();
-        return result;
+        /**
+         * TypedQuery<Double> query = em.createQuery("SELECT u.balance FROM
+         * SystemUser AS u WHERE u.username = " + '"' + getUsername() + '"',
+         * Double.class); Double result = query.getSingleResult();
+         *
+         */
+
+        SystemUser user = (SystemUser) em.find(SystemUser.class, getUsername());
+        return user.getBalance();
+    }
+
+//Handles sending money from sender to recipient
+    public boolean sendPayment(String sender, String recipient, Double amount) {
+        try {
+            SystemUser senderObj;
+            SystemUser recipientObj;
+
+            senderObj = (SystemUser) em.find(SystemUser.class, sender);
+            recipientObj = (SystemUser) em.find(SystemUser.class, recipient);
+            System.out.println(senderObj.getUsername() + " " + recipientObj.getUsername());
+
+            //If sender and recipient exist
+            if (senderObj == null || recipientObj == null) {
+                System.out.println(senderObj.getUsername() + " " + recipientObj.getUsername());
+                return false;
+            }
+
+            //Only go ahead if sender has enough money
+            if (senderObj.getBalance() < amount) {
+                System.out.println("Not enough money");
+                return false;
+            } else {
+                senderObj.setBalance(senderObj.getBalance() - amount);
+                System.out.println(senderObj.getBalance());
+            }
+
+            recipientObj.setBalance(recipientObj.getBalance() + amount);
+            System.out.println(recipientObj.getBalance());
+
+            Payment paymentToSend = new Payment(amount, sender, recipient, true);
+            em.persist(paymentToSend);
+            //em.merge(senderObj);
+            //em.merge(recipientObj);
+            //em.flush();
+            return true;
+
+        } catch (Exception err) {
+            Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, err);
+            return false;
+        }
     }
 }

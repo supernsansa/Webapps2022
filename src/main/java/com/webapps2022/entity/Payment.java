@@ -49,11 +49,11 @@ public class Payment implements Serializable {
     public Payment() {
     }
 
-    public Payment(Double Amount, String sender, String recipient, OffsetDateTime dateTime, Boolean fulfilled) {
+    public Payment(Double Amount, String sender, String recipient, Boolean fulfilled) {
         this.amount = Amount;
         this.sender = sender;
         this.recipient = recipient;
-        this.dateTime = dateTime;
+        this.dateTime = OffsetDateTime.now();
         this.fulfilled = fulfilled;
     }
 

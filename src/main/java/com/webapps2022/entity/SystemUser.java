@@ -47,7 +47,7 @@ public class SystemUser implements Serializable {
     public SystemUser(String username, String userpassword, String systemUserGroup) {
         this.username = username;
         this.userpassword = userpassword;
-        this.balance = 2000.00;
+        this.balance = 1000.00;
         this.systemUserGroup = systemUserGroup;
         //this.name = name;
         //this.surname = surname;

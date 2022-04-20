@@ -19,9 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequestScoped
 public class LoginBean implements Serializable {
 
-    @EJB
-    UserService usrSrv;
-
     public void logout() {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
@@ -35,13 +32,5 @@ public class LoginBean implements Serializable {
         } catch (IOException ex) {
             Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public String getActiveUsername() {
-        return usrSrv.getUsername();
-    }
-
-    public Double getActiveBalance() {
-        return usrSrv.getBalance();
     }
 }

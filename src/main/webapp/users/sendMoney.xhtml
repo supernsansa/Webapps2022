@@ -7,5 +7,19 @@
     </head>
     <body>
         <h:outputLabel value="Make Payment"/>
+        <br/>
+        <h:form>
+            <!-- TODO: validate + check that user exists and isn't themselves -->
+            Recipient: <h:inputText id ="recipient" value="#{paymentBean.recipient}" title="Recipient" required="true" requiredMessage="Mandatory Field"/>
+            &nbsp;
+            <h:message style="color:red" for="recipient"/>
+            <br/>
+            <!-- TODO: Put user's chosen currency symbol here + validate + check if user has enough money -->
+            Amount: <h:inputText id ="amount" value="#{paymentBean.amount}" title="Amount" required="true" requiredMessage="Mandatory Field"/>
+            &nbsp;
+            <h:message style="color:red" for="amount"/>
+            <br/>
+            <h:commandButton id="sendPayment" type="submit" value="Send" action="#{paymentBean.sendPayment()}" title="Send Payment"/>
+        </h:form>
     </body>
 </html>
