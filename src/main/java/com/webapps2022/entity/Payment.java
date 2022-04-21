@@ -17,8 +17,17 @@ import javax.validation.constraints.NotNull;
 
 //Entity representing a monetary transaction between 2 users
 @Entity
-@NamedQuery(name = "Payment.findAllByName",
-        query = "SELECT p FROM Payment p WHERE p.sender = :user OR p.recipient = :user")
+@NamedQueries({
+    @NamedQuery(name = "Payment.findAllFulfilled",
+            query = "SELECT p FROM Payment p WHERE p.fulfilled = TRUE"),
+    @NamedQuery(name = "Payment.findAllPending",
+            query = "SELECT p FROM Payment p WHERE p.fulfilled = FALSE"),
+    @NamedQuery(name = "Payment.findAllFulfilledByName",
+            query = "SELECT p FROM Payment p WHERE (p.sender = :user OR p.recipient = :user) AND p.fulfilled = TRUE"),
+    @NamedQuery(name = "Payment.findAllPendingByName",
+            query = "SELECT p FROM Payment p WHERE (p.recipient = :user) AND p.fulfilled = FALSE"),
+    @NamedQuery(name = "Payment.findAllNotifsByName",
+            query = "SELECT p FROM Payment p WHERE (p.sender = :user) AND p.fulfilled = FALSE"),})
 
 public class Payment implements Serializable {
 

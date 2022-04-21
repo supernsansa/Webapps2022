@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">>
+    <head>
+        <title>Request Payment</title>
+    </head>
+    <body>
+        <h:outputLabel value="Request Payment"/>
+        <br/>
+        <h:form>
+            <!-- TODO: validate + check that user exists and isn't themselves -->
+            Payer: <h:inputText id ="payer" value="#{paymentBean.sender}" title="Payer" required="true" requiredMessage="Mandatory Field"/>
+            &nbsp;
+            <h:message style="color:red" for="payer"/>
+            <br/>
+            <!-- TODO: Put user's chosen currency symbol here + validate -->
+            Amount: <h:inputText id ="amount" value="#{paymentBean.amount}" title="Amount" required="true" requiredMessage="Mandatory Field"/>
+            &nbsp;
+            <h:message style="color:red" for="amount"/>
+            <br/>
+            <h:commandButton id="sendPayment" type="submit" value="Send" action="#{paymentBean.sendPaymentRequest()}" title="Send Payment"/>
+        </h:form>
+    </body>
+</html>

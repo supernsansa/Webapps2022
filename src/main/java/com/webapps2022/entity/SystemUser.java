@@ -1,16 +1,9 @@
 package com.webapps2022.entity;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Query;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
@@ -38,8 +31,8 @@ public class SystemUser implements Serializable {
     private String systemUserGroup;
 
     //each user has many debit transaction records and each record belongs to one user
-    @OneToMany(cascade = CascadeType.ALL, targetEntity = Payment.class)
-    private List<Payment> payments;
+    //@OneToMany(cascade = CascadeType.ALL, targetEntity = Payment.class)
+    //private List<Payment> payments;
 
     public SystemUser() {
     }
@@ -92,13 +85,13 @@ public class SystemUser implements Serializable {
         this.systemUserGroup = systemUserGroup;
     }
 
-    public List<Payment> getPayments() {
-        return payments;
-    }
+    //public List<Payment> getPayments() {
+    //    return payments;
+    //}
 
-    public void setPayments(List<Payment> debits) {
-        this.payments = debits;
-    }
+    //public void setPayments(List<Payment> debits) {
+    //    this.payments = debits;
+    //}
 
     /**
      * public String getName() { return name; }

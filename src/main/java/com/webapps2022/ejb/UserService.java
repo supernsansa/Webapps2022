@@ -15,6 +15,7 @@ import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 @Stateless
@@ -71,7 +72,8 @@ public class UserService {
         return user.getBalance();
     }
 
-//Handles sending money from sender to recipient
+    //TODO: turn into transaction
+    //Handles sending money from sender to recipient
     public boolean sendPayment(String sender, String recipient, Double amount) {
         try {
             SystemUser senderObj;
@@ -80,12 +82,6 @@ public class UserService {
             senderObj = (SystemUser) em.find(SystemUser.class, sender);
             recipientObj = (SystemUser) em.find(SystemUser.class, recipient);
             System.out.println(senderObj.getUsername() + " " + recipientObj.getUsername());
-
-            //If sender and recipient exist
-            if (senderObj == null || recipientObj == null) {
-                System.out.println(senderObj.getUsername() + " " + recipientObj.getUsername());
-                return false;
-            }
 
             //Only go ahead if sender has enough money
             if (senderObj.getBalance() < amount) {
@@ -110,5 +106,50 @@ public class UserService {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, err);
             return false;
         }
+    }
+
+    //TODO: turn into transaction
+    //Handles sending payment request
+    public boolean sendPaymentRequest(String sender, String recipient, Double amount) {
+        try {
+            SystemUser senderObj;
+            SystemUser recipientObj;
+
+            senderObj = (SystemUser) em.find(SystemUser.class, sender);
+            recipientObj = (SystemUser) em.find(SystemUser.class, recipient);
+            System.out.println(senderObj.getUsername() + " " + recipientObj.getUsername());
+
+            Payment paymentToSend = new Payment(amount, sender, recipient, false);
+            em.persist(paymentToSend);
+            return true;
+
+        } catch (Exception err) {
+            Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, err);
+            return false;
+        }
+    }
+
+    //Retrieves all fulfilled payments (credits and debits) that a user has made
+    public List<Payment> getFulfilledPayments() {
+        List result = em.createNamedQuery("Payment.findAllFulfilledByName")
+                .setParameter("user", getUsername())
+                .getResultList();
+        return result;
+    }
+
+    //Retrieves all pending payment requests that a user has made
+    public List<Payment> getPendingPayments() {
+        List result = em.createNamedQuery("Payment.findAllPendingByName")
+                .setParameter("user", getUsername())
+                .getResultList();
+        return result;
+    }
+
+    //Retrieves all payment requests recieved by a user
+    public List<Payment> getNotifPayments() {
+        List result = em.createNamedQuery("Payment.findAllNotifsByName")
+                .setParameter("user", getUsername())
+                .getResultList();
+        return result;
     }
 }

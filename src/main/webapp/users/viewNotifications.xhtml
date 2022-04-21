@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+        <title>Notifications</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <h:outputLabel value = "Payment Requests"/>
+        <h:form>
+            <h:dataTable value="#{viewPaymentsBean.notificaitonPayments}" var="payment">
+                <h:column>    				
+                    <f:facet name="header">id</f:facet>    				
+                        #{payment.id}
+                </h:column>
+                <h:column>    				
+                    <f:facet name="header">Sender</f:facet>    				
+                        #{payment.sender}
+                </h:column>
+                <h:column>    				
+                    <f:facet name="header">Recipient</f:facet>    				
+                        #{payment.recipient}
+                </h:column>
+                <h:column>    				
+                    <f:facet name="header">Amount</f:facet>    				
+                        #{payment.amount}
+                </h:column>
+            </h:dataTable>
+        </h:form>
+    </body>
+</html>

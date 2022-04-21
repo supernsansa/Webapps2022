@@ -37,6 +37,16 @@ public class PaymentBean {
         }
     }
 
+    public void sendPaymentRequest() throws IOException {
+        recipient = usrSrv.getUsername();
+        FacesContext context = FacesContext.getCurrentInstance();
+        if (usrSrv.sendPaymentRequest(sender, recipient, amount) == true) {
+            context.getExternalContext().redirect("user.xhtml");
+        } else {
+            context.addMessage(null, new FacesMessage("Error occurred, check fields"));
+        }
+    }
+
     public UserService getUsrSrv() {
         return usrSrv;
     }
