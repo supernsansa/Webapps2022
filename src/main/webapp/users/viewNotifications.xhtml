@@ -10,22 +10,32 @@
     <body>
         <h:outputLabel value = "Payment Requests"/>
         <h:form>
-            <h:dataTable value="#{viewPaymentsBean.notificaitonPayments}" var="payment">
+            <h:dataTable value="#{viewPaymentsBean.notificationPayments}" var="payment">
                 <h:column>    				
                     <f:facet name="header">id</f:facet>    				
                         #{payment.id}
                 </h:column>
                 <h:column>    				
-                    <f:facet name="header">Sender</f:facet>    				
-                        #{payment.sender}
+                    <f:facet name="header">Date/Time Requested</f:facet>    				
+                        #{payment.dateTime}
                 </h:column>
                 <h:column>    				
-                    <f:facet name="header">Recipient</f:facet>    				
+                    <f:facet name="header">Requested by</f:facet>    				
                         #{payment.recipient}
                 </h:column>
                 <h:column>    				
                     <f:facet name="header">Amount</f:facet>    				
                         #{payment.amount}
+                </h:column>
+                <h:column>
+                    <h:commandButton action ="#{viewPaymentsBean.acceptPaymentRequest()}" value="Accept">
+                        <f:setPropertyActionListener target="#{viewPaymentsBean.paymentId}" value="#{payment.id}"/>
+                    </h:commandButton>
+                </h:column>
+                <h:column>
+                    <h:commandButton action ="#{viewPaymentsBean.rejectPaymentRequest()}" value="Reject">
+                        <f:setPropertyActionListener target="#{viewPaymentsBean.paymentId}" value="#{payment.id}"/>
+                    </h:commandButton>
                 </h:column>
             </h:dataTable>
         </h:form>

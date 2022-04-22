@@ -15,25 +15,23 @@ import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 @Stateless
 public class UserService {
-
+    
     @PersistenceContext
     EntityManager em;
     @Resource
     EJBContext ejbContext;
-
+    
     public UserService() {
     }
-
+    
     public void registerUser(String username, String userpassword) {
         try {
             SystemUser sys_user;
             SystemUserGroup sys_user_group;
-
+            
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             String passwd = userpassword;
             md.update(passwd.getBytes("UTF-8"));
@@ -45,10 +43,10 @@ public class UserService {
             // you need to also implement a constructor that will make the following code succeed
             sys_user = new SystemUser(username, paswdToStoreInDB, "users");
             sys_user_group = new SystemUserGroup(username, "users");
-
+            
             em.persist(sys_user);
             em.persist(sys_user_group);
-
+            
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException ex) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -59,15 +57,8 @@ public class UserService {
         String username = ejbContext.getCallerPrincipal().getName();
         return username;
     }
-
+    
     public Double getBalance() {
-        /**
-         * TypedQuery<Double> query = em.createQuery("SELECT u.balance FROM
-         * SystemUser AS u WHERE u.username = " + '"' + getUsername() + '"',
-         * Double.class); Double result = query.getSingleResult();
-         *
-         */
-
         SystemUser user = (SystemUser) em.find(SystemUser.class, getUsername());
         return user.getBalance();
     }
@@ -78,7 +69,7 @@ public class UserService {
         try {
             SystemUser senderObj;
             SystemUser recipientObj;
-
+            
             senderObj = (SystemUser) em.find(SystemUser.class, sender);
             recipientObj = (SystemUser) em.find(SystemUser.class, recipient);
             System.out.println(senderObj.getUsername() + " " + recipientObj.getUsername());
@@ -91,17 +82,14 @@ public class UserService {
                 senderObj.setBalance(senderObj.getBalance() - amount);
                 System.out.println(senderObj.getBalance());
             }
-
+            
             recipientObj.setBalance(recipientObj.getBalance() + amount);
             System.out.println(recipientObj.getBalance());
-
+            
             Payment paymentToSend = new Payment(amount, sender, recipient, true);
             em.persist(paymentToSend);
-            //em.merge(senderObj);
-            //em.merge(recipientObj);
-            //em.flush();
             return true;
-
+            
         } catch (Exception err) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, err);
             return false;
@@ -114,15 +102,73 @@ public class UserService {
         try {
             SystemUser senderObj;
             SystemUser recipientObj;
-
+            
             senderObj = (SystemUser) em.find(SystemUser.class, sender);
             recipientObj = (SystemUser) em.find(SystemUser.class, recipient);
             System.out.println(senderObj.getUsername() + " " + recipientObj.getUsername());
-
+            
             Payment paymentToSend = new Payment(amount, sender, recipient, false);
             em.persist(paymentToSend);
             return true;
+            
+        } catch (Exception err) {
+            Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, err);
+            return false;
+        }
+    }
 
+    //Handles accepting payment request
+    public boolean acceptPaymentRequest(Long paymentId) {
+        try {
+            SystemUser senderObj;
+            SystemUser recipientObj;
+            Payment paymentObj;
+            Double amount;
+
+            //Find all relevant entities
+            paymentObj = (Payment) em.find(Payment.class, paymentId);
+            senderObj = (SystemUser) em.find(SystemUser.class, paymentObj.getSender());
+            recipientObj = (SystemUser) em.find(SystemUser.class, paymentObj.getRecipient());
+            System.out.println(senderObj.getUsername() + " " + recipientObj.getUsername());
+            amount = paymentObj.getAmount();
+
+            //Only go ahead if sender has enough money
+            if (senderObj.getBalance() < amount) {
+                System.out.println("Not enough money");
+                return false;
+            } else {
+                //Remove amount from sender's account
+                senderObj.setBalance(senderObj.getBalance() - amount);
+                System.out.println(senderObj.getBalance());
+            }
+
+            //Put amount into recipient's account
+            recipientObj.setBalance(recipientObj.getBalance() + amount);
+            System.out.println(recipientObj.getBalance());
+
+            //Change fulfilled variable in paymentObj
+            paymentObj.setFulfilled(Boolean.TRUE);
+            
+            return true;
+            
+        } catch (Exception err) {
+            Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, err);
+            return false;
+        }
+    }
+
+    //Handles rejecting payment request
+    public boolean rejectPaymentRequest(Long paymentId) {
+        try {
+            Payment paymentObj;
+
+            //Find payment entity
+            paymentObj = (Payment) em.find(Payment.class, paymentId);
+
+            //Remove it from database
+            em.remove(paymentObj);
+            return true;
+            
         } catch (Exception err) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, err);
             return false;
