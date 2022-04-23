@@ -1,9 +1,16 @@
 package com.webapps2022.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
@@ -30,9 +37,13 @@ public class SystemUser implements Serializable {
     //Each user belongs to a single user group (user or admin)
     private String systemUserGroup;
 
-    //each user has many debit transaction records and each record belongs to one user
-    //@OneToMany(cascade = CascadeType.ALL, targetEntity = Payment.class)
-    //private List<Payment> payments;
+    //each user has many payment records and each record belongs to two users
+    @ManyToMany(cascade = CascadeType.ALL, targetEntity = Payment.class)
+    @JoinTable(
+            name = "systemUserPayments",
+            joinColumns = @JoinColumn(name = "systemUser_username"),
+            inverseJoinColumns = @JoinColumn(name = "payment_id"))
+    private List<Payment> payments;
 
     public SystemUser() {
     }
@@ -42,8 +53,7 @@ public class SystemUser implements Serializable {
         this.userpassword = userpassword;
         this.balance = 1000.00;
         this.systemUserGroup = systemUserGroup;
-        //this.name = name;
-        //this.surname = surname;
+        this.payments = new ArrayList<>();
     }
 
     /**
@@ -85,23 +95,14 @@ public class SystemUser implements Serializable {
         this.systemUserGroup = systemUserGroup;
     }
 
-    //public List<Payment> getPayments() {
-    //    return payments;
-    //}
+    public List<Payment> getPayments() {
+        return payments;
+    }
 
-    //public void setPayments(List<Payment> debits) {
-    //    this.payments = debits;
-    //}
+    public void setPayments(List<Payment> payments) {
+        this.payments = payments;
+    }
 
-    /**
-     * public String getName() { return name; }
-     *
-     * public void setName(String name) { this.name = name; }
-     *
-     * public String getSurname() { return surname; }
-     *
-     * public void setSurname(String surname) { this.surname = surname; }
-     */
     @Override
     public int hashCode() {
         int hash = 5;

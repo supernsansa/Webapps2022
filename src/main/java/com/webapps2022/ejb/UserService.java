@@ -85,8 +85,11 @@ public class UserService {
             
             recipientObj.setBalance(recipientObj.getBalance() + amount);
             System.out.println(recipientObj.getBalance());
-            
+
+            //Add payment to DB and relevant entities
             Payment paymentToSend = new Payment(amount, sender, recipient, true);
+            senderObj.getPayments().add(paymentToSend);
+            recipientObj.getPayments().add(paymentToSend);
             em.persist(paymentToSend);
             return true;
             

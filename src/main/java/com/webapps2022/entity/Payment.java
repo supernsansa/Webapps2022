@@ -6,14 +6,18 @@ package com.webapps2022.entity;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 
 //Entity representing a monetary transaction between 2 users
 @Entity
@@ -36,7 +40,7 @@ public class Payment implements Serializable {
     private Long id;
 
     //Amount of money being moved in transaction
-    @NotNull
+    @PositiveOrZero
     Double amount;
 
     //email of sender goes here
@@ -55,6 +59,10 @@ public class Payment implements Serializable {
     @NotNull
     Boolean fulfilled;
 
+    @NotNull
+    @ManyToMany(mappedBy = "payments")
+    List<SystemUser> involvedUsers;
+
     public Payment() {
     }
 
@@ -64,6 +72,7 @@ public class Payment implements Serializable {
         this.recipient = recipient;
         this.dateTime = OffsetDateTime.now();
         this.fulfilled = fulfilled;
+        this.involvedUsers = new ArrayList<>();
     }
 
     public Double getAmount() {
@@ -112,6 +121,14 @@ public class Payment implements Serializable {
 
     public void setFulfilled(Boolean fulfilled) {
         this.fulfilled = fulfilled;
+    }
+
+    public List<SystemUser> getInvolvedUsers() {
+        return involvedUsers;
+    }
+
+    public void setInvolvedUsers(List<SystemUser> involvedUsers) {
+        this.involvedUsers = involvedUsers;
     }
 
     @Override
