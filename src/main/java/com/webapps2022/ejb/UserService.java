@@ -13,25 +13,28 @@ import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import static javax.ejb.TransactionAttributeType.*;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Stateless
+@TransactionAttribute(REQUIRED)
 public class UserService {
-    
+
     @PersistenceContext
     EntityManager em;
     @Resource
     EJBContext ejbContext;
-    
+
     public UserService() {
     }
-    
+
     public void registerUser(String username, String userpassword) {
         try {
             SystemUser sys_user;
             SystemUserGroup sys_user_group;
-            
+
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             String passwd = userpassword;
             md.update(passwd.getBytes("UTF-8"));
@@ -39,14 +42,13 @@ public class UserService {
             BigInteger bigInt = new BigInteger(1, digest);
             String paswdToStoreInDB = bigInt.toString(16);
 
-            // apart from the default constructor which is required by JPA
-            // you need to also implement a constructor that will make the following code succeed
             sys_user = new SystemUser(username, paswdToStoreInDB, "users");
             sys_user_group = new SystemUserGroup(username, "users");
-            
+
             em.persist(sys_user);
             em.persist(sys_user_group);
-            
+            em.flush();
+
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException ex) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -57,32 +59,34 @@ public class UserService {
         String username = ejbContext.getCallerPrincipal().getName();
         return username;
     }
-    
+
     public Double getBalance() {
         SystemUser user = (SystemUser) em.find(SystemUser.class, getUsername());
         return user.getBalance();
     }
 
-    //TODO: turn into transaction
     //Handles sending money from sender to recipient
-    public boolean sendPayment(String sender, String recipient, Double amount) {
+    public String sendPayment(String sender, String recipient, Double amount) {
         try {
             SystemUser senderObj;
             SystemUser recipientObj;
-            
+
             senderObj = (SystemUser) em.find(SystemUser.class, sender);
             recipientObj = (SystemUser) em.find(SystemUser.class, recipient);
+            //Check that recipient exists
+            if (recipientObj == null) {
+                return "Recipient not found, check field";
+            }
             System.out.println(senderObj.getUsername() + " " + recipientObj.getUsername());
 
             //Only go ahead if sender has enough money
             if (senderObj.getBalance() < amount) {
-                System.out.println("Not enough money");
-                return false;
+                return "Insufficient funds";
             } else {
                 senderObj.setBalance(senderObj.getBalance() - amount);
                 System.out.println(senderObj.getBalance());
             }
-            
+
             recipientObj.setBalance(recipientObj.getBalance() + amount);
             System.out.println(recipientObj.getBalance());
 
@@ -91,37 +95,42 @@ public class UserService {
             senderObj.getPayments().add(paymentToSend);
             recipientObj.getPayments().add(paymentToSend);
             em.persist(paymentToSend);
-            return true;
-            
-        } catch (Exception err) {
+            em.flush();
+            return "Success";
+
+        } catch (IllegalArgumentException err) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, err);
-            return false;
+            return "Recipient not found, check field";
         }
     }
 
-    //TODO: turn into transaction
     //Handles sending payment request
-    public boolean sendPaymentRequest(String sender, String recipient, Double amount) {
+    public String sendPaymentRequest(String sender, String recipient, Double amount) {
         try {
             SystemUser senderObj;
             SystemUser recipientObj;
-            
+
             senderObj = (SystemUser) em.find(SystemUser.class, sender);
             recipientObj = (SystemUser) em.find(SystemUser.class, recipient);
+            //Check that recipient exists
+            if (senderObj == null) {
+                return "Payer not found, check field";
+            }
             System.out.println(senderObj.getUsername() + " " + recipientObj.getUsername());
-            
+
             Payment paymentToSend = new Payment(amount, sender, recipient, false);
             em.persist(paymentToSend);
-            return true;
-            
-        } catch (Exception err) {
+            em.flush();
+            return "Success";
+
+        } catch (IllegalArgumentException err) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, err);
-            return false;
+            return "Recipient not found, check field";
         }
     }
 
     //Handles accepting payment request
-    public boolean acceptPaymentRequest(Long paymentId) {
+    public String acceptPaymentRequest(Long paymentId) {
         try {
             SystemUser senderObj;
             SystemUser recipientObj;
@@ -137,8 +146,7 @@ public class UserService {
 
             //Only go ahead if sender has enough money
             if (senderObj.getBalance() < amount) {
-                System.out.println("Not enough money");
-                return false;
+                return "Insufficient funds";
             } else {
                 //Remove amount from sender's account
                 senderObj.setBalance(senderObj.getBalance() - amount);
@@ -151,12 +159,13 @@ public class UserService {
 
             //Change fulfilled variable in paymentObj
             paymentObj.setFulfilled(Boolean.TRUE);
-            
-            return true;
-            
+            em.flush();
+
+            return "Success";
+
         } catch (Exception err) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, err);
-            return false;
+            return "Error occurred";
         }
     }
 
@@ -170,8 +179,9 @@ public class UserService {
 
             //Remove it from database
             em.remove(paymentObj);
+            em.flush();
             return true;
-            
+
         } catch (Exception err) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, err);
             return false;
