@@ -7,7 +7,6 @@ package com.webapps2022.jsf;
 import com.webapps2022.ejb.UserService;
 import java.io.IOException;
 import javax.ejb.EJB;
-import javax.ejb.TransactionAttribute;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
@@ -30,20 +29,22 @@ public class PaymentBean {
     public void sendPayment() throws IOException {
         sender = usrSrv.getUsername();
         FacesContext context = FacesContext.getCurrentInstance();
-        if (usrSrv.sendPayment(sender, recipient, amount) == true) {
+        String result = usrSrv.sendPayment(sender, recipient, amount);
+        if (result.equals("Success")) {
             context.getExternalContext().redirect("user.xhtml");
         } else {
-            context.addMessage(null, new FacesMessage("Error occurred, check fields"));
+            context.addMessage(null, new FacesMessage(result));
         }
     }
 
     public void sendPaymentRequest() throws IOException {
         recipient = usrSrv.getUsername();
         FacesContext context = FacesContext.getCurrentInstance();
-        if (usrSrv.sendPaymentRequest(sender, recipient, amount) == true) {
+        String result = usrSrv.sendPaymentRequest(sender, recipient, amount);
+        if (result.equals("Success")) {
             context.getExternalContext().redirect("user.xhtml");
         } else {
-            context.addMessage(null, new FacesMessage("Error occurred, check fields"));
+            context.addMessage(null, new FacesMessage(result));
         }
     }
 

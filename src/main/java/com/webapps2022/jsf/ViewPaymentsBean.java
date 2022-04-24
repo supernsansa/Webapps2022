@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.inject.Named;
-import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -63,10 +62,11 @@ public class ViewPaymentsBean {
     //Instructs user service EJB to execute payment request
     public void acceptPaymentRequest() throws IOException {
         FacesContext context = FacesContext.getCurrentInstance();
-        if (usrSrv.acceptPaymentRequest(paymentId) == true) {
+        String result = usrSrv.acceptPaymentRequest(paymentId);
+        if (result.equals("Success")) {
             context.getExternalContext().redirect("user.xhtml");
         } else {
-            context.addMessage(null, new FacesMessage("Error occurred"));
+            context.addMessage(null, new FacesMessage(result));
         }
     }
 

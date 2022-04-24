@@ -10,23 +10,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
 @Entity
 public class SystemUser implements Serializable {
 
-    /**
-     * @Id @GeneratedValue(strategy = GenerationType.AUTO) private Long id;
-     */
-    // here on could use Bean Validation annotations to enforce specific rules - this could be alternatively implemented when validating the form in the web tier
-    // for now we check only for Null values
     @Id
     private String username;
 
-    // here on could use Bean Validation annotations to enforce specific rules - this could be alternatively implemented when validating the form in the web tier
-    // for now we check only for Null values
     @NotNull
     private String userpassword;
 
@@ -56,13 +48,6 @@ public class SystemUser implements Serializable {
         this.payments = new ArrayList<>();
     }
 
-    /**
-     * public Long getId() { return id; }
-     *
-     * public void setId(Long id) { this.id = id; }
-     *
-     * @return
-     */
     public String getUsername() {
         return username;
     }
@@ -106,11 +91,11 @@ public class SystemUser implements Serializable {
     @Override
     public int hashCode() {
         int hash = 5;
-        //hash = 97 * hash + Objects.hashCode(this.id);
         hash = 97 * hash + Objects.hashCode(this.username);
         hash = 97 * hash + Objects.hashCode(this.userpassword);
         hash = 97 * hash + Objects.hashCode(this.balance);
-        //hash = 97 * hash + Objects.hashCode(this.surname);
+        hash = 97 * hash + Objects.hashCode(this.systemUserGroup);
+        hash = 97 * hash + Objects.hashCode(this.payments);
         return hash;
     }
 
@@ -123,14 +108,16 @@ public class SystemUser implements Serializable {
             return false;
         }
         final SystemUser other = (SystemUser) obj;
-        /**
-         * if (!Objects.equals(this.id, other.id)) { return false; }
-         *
-         */
         if (!Objects.equals(this.userpassword, other.userpassword)) {
             return false;
         }
         if (!Objects.equals(this.balance, other.balance)) {
+            return false;
+        }
+        if (!Objects.equals(this.systemUserGroup, other.systemUserGroup)) {
+            return false;
+        }
+        if (!Objects.equals(this.payments, other.payments)) {
             return false;
         }
         return Objects.equals(this.username, other.username);
