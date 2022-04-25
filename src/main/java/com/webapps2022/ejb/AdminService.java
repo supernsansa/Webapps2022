@@ -4,6 +4,7 @@
  */
 package com.webapps2022.ejb;
 
+import com.webapps2022.entity.Payment;
 import com.webapps2022.entity.SystemUser;
 import java.util.List;
 import javax.annotation.Resource;
@@ -46,5 +47,19 @@ public class AdminService {
 
     public void setEjbContext(EJBContext ejbContext) {
         this.ejbContext = ejbContext;
+    }
+
+    //Retrieves all fulfilled payments (credits and debits) in the database
+    public List<Payment> getAllFulfilledPayments() {
+        List result = em.createNamedQuery("Payment.findAllFulfilled")
+                .getResultList();
+        return result;
+    }
+
+    //Retrieves all fulfilled payments (credits and debits) that a user has made
+    public List<Payment> getAllNotificationPayments() {
+        List result = em.createNamedQuery("Payment.findAllPending")
+                .getResultList();
+        return result;
     }
 }

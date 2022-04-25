@@ -76,6 +76,9 @@ public class UserService {
             //Check that recipient exists
             if (recipientObj == null) {
                 return "Recipient not found, check field";
+            } //Check that sender and recipient are not the same user
+            else if (senderObj.getUsername().equals(recipientObj.getUsername())) {
+                return "You cannot send money to yourself!";
             }
             System.out.println(senderObj.getUsername() + " " + recipientObj.getUsername());
 
@@ -115,6 +118,9 @@ public class UserService {
             //Check that recipient exists
             if (senderObj == null) {
                 return "Payer not found, check field";
+            } //Check that sender and recipient are not the same user
+            else if (senderObj.getUsername().equals(recipientObj.getUsername())) {
+                return "You cannot send money to yourself!";
             }
             System.out.println(senderObj.getUsername() + " " + recipientObj.getUsername());
 

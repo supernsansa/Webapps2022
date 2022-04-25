@@ -4,6 +4,7 @@
  */
 package com.webapps2022.jsf;
 
+import com.webapps2022.ejb.AdminService;
 import com.webapps2022.ejb.UserService;
 import com.webapps2022.entity.Payment;
 import java.io.IOException;
@@ -20,9 +21,13 @@ public class ViewPaymentsBean {
 
     @EJB
     UserService usrSrv;
+    @EJB
+    AdminService adminSrv;
     List<Payment> fulfilledPayments;
     List<Payment> pendingPayments;
     List<Payment> notificationPayments;
+    List<Payment> allFulfilledPayments;
+    List<Payment> allNotificationPayments;
     Long paymentId;
 
     public ViewPaymentsBean() {
@@ -57,6 +62,20 @@ public class ViewPaymentsBean {
     public List<Payment> getNotificationPayments() {
         notificationPayments = usrSrv.getNotifPayments();
         return notificationPayments;
+    }
+
+    public List<Payment> getAllFulfilledPayments() {
+        allFulfilledPayments = adminSrv.getAllFulfilledPayments();
+        return allFulfilledPayments;
+    }
+
+    public List<Payment> getAllNotificationPayments() {
+        allNotificationPayments = adminSrv.getAllNotificationPayments();
+        return allNotificationPayments;
+    }
+
+    public AdminService getAdminSrv() {
+        return adminSrv;
     }
 
     //Instructs user service EJB to execute payment request
