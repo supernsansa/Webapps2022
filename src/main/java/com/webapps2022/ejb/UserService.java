@@ -120,7 +120,7 @@ public class UserService {
                 return "Payer not found, check field";
             } //Check that sender and recipient are not the same user
             else if (senderObj.getUsername().equals(recipientObj.getUsername())) {
-                return "You cannot send money to yourself!";
+                return "You cannot request money from yourself!";
             }
             System.out.println(senderObj.getUsername() + " " + recipientObj.getUsername());
 
