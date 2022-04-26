@@ -1,6 +1,7 @@
 package com.webapps2022.entity;
 
 import com.webapps2022.resources.Currency;
+import com.webapps2022.restservice.ConversionRestClient;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -9,6 +10,8 @@ import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -44,6 +47,8 @@ public class SystemUser implements Serializable {
     private List<Payment> payments;
 
     //Users can choose what currency their money will be stored as
+    @NotNull
+    @Enumerated(EnumType.STRING)
     private Currency currency;
 
     public SystemUser() {
@@ -52,10 +57,24 @@ public class SystemUser implements Serializable {
     public SystemUser(String username, String userpassword, String systemUserGroup, Currency currency) {
         this.username = username;
         this.userpassword = userpassword;
-        this.balance = 1000.00;
         this.systemUserGroup = systemUserGroup;
         this.payments = new ArrayList<>();
         this.currency = currency;
+        //Give user 1000 GBP to start (convert to chosen currency)
+        Double startingBalance = ConversionRestClient.runConversionRestOperation(Currency.GBP, currency, 1000.0);
+        BigDecimal bd = new BigDecimal(startingBalance).setScale(2, RoundingMode.HALF_UP);
+        this.balance = bd.doubleValue();
+    }
+
+    //Constructor for making SystemUser with custom starting balance
+    public SystemUser(String username, String userpassword, String systemUserGroup, Currency currency, Double amount) {
+        this.username = username;
+        this.userpassword = userpassword;
+        this.systemUserGroup = systemUserGroup;
+        this.payments = new ArrayList<>();
+        this.currency = currency;
+        BigDecimal bd = new BigDecimal(amount).setScale(2, RoundingMode.HALF_UP);
+        this.balance = bd.doubleValue();
     }
 
     public String getUsername() {

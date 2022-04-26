@@ -47,7 +47,7 @@ public class InitService {
             String paswdToStoreInDB = bigInt.toString(16);
             
             //Create default admin1 account
-            sys_user = new SystemUser("admin1", paswdToStoreInDB, "admins", Currency.GBP);
+            sys_user = new SystemUser("admin1", paswdToStoreInDB, "admins", Currency.GBP, 0.0);
             sys_user.setBalance(0.0);
             sys_user_group = new SystemUserGroup("admin1", "admins");
             

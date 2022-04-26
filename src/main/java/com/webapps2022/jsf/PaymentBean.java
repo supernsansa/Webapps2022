@@ -16,7 +16,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
-//TODO: Better error messages for not enough money and nonexistant recipient.
 @Named
 @RequestScoped
 public class PaymentBean {

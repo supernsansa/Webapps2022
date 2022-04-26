@@ -22,8 +22,8 @@ public class Conversion {
     public Conversion() {
     }
 
-    @GET
     @Path("/{currency1}/{currency2}/{amount}")
+    @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     public Double convert(@PathParam("currency1") String currency1, @PathParam("currency2") String currency2,
             @PathParam("amount") String amount) {

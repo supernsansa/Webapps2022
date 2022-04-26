@@ -4,6 +4,7 @@ import com.webapps2022.entity.Payment;
 import com.webapps2022.entity.SystemUser;
 import com.webapps2022.entity.SystemUserGroup;
 import com.webapps2022.resources.Currency;
+import com.webapps2022.restservice.ConversionRestClient;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -90,15 +91,18 @@ public class UserService {
             if (senderObj.getBalance() < amount) {
                 return "Insufficient funds";
             } else {
+                //Remove funds from sender
                 senderObj.setBalance(senderObj.getBalance() - amount);
                 System.out.println(senderObj.getBalance());
             }
 
-            recipientObj.setBalance(recipientObj.getBalance() + amount);
+            //Convert and add money to recipient's account balance
+            Double amountToSend = ConversionRestClient.runConversionRestOperation(senderObj.getCurrency(), recipientObj.getCurrency(), amount);
+            recipientObj.setBalance(recipientObj.getBalance() + amountToSend);
             System.out.println(recipientObj.getBalance());
 
             //Add payment to DB and relevant entities
-            Payment paymentToSend = new Payment(amount, sender, recipient, true);
+            Payment paymentToSend = new Payment(senderObj.getCurrency(), amount, sender, recipient, true);
             senderObj.getPayments().add(paymentToSend);
             recipientObj.getPayments().add(paymentToSend);
             em.persist(paymentToSend);
@@ -127,8 +131,10 @@ public class UserService {
                 return "You cannot request money from yourself!";
             }
             System.out.println(senderObj.getUsername() + " " + recipientObj.getUsername());
-
-            Payment paymentToSend = new Payment(amount, sender, recipient, false);
+            //Convert amount
+            Double amountToSend = ConversionRestClient.runConversionRestOperation(recipientObj.getCurrency(), senderObj.getCurrency(), amount);
+            //Persist payment record in db
+            Payment paymentToSend = new Payment(senderObj.getCurrency(), amountToSend, sender, recipient, false);
             em.persist(paymentToSend);
             em.flush();
             return "Success";
@@ -155,6 +161,8 @@ public class UserService {
             amount = paymentObj.getAmount();
 
             //Only go ahead if sender has enough money
+            //Convert amount
+            Double amountToRecieve = ConversionRestClient.runConversionRestOperation(paymentObj.getCurrency(), recipientObj.getCurrency(), amount);
             if (senderObj.getBalance() < amount) {
                 return "Insufficient funds";
             } else {
@@ -164,7 +172,7 @@ public class UserService {
             }
 
             //Put amount into recipient's account
-            recipientObj.setBalance(recipientObj.getBalance() + amount);
+            recipientObj.setBalance(recipientObj.getBalance() + amountToRecieve);
             System.out.println(recipientObj.getBalance());
 
             //Change fulfilled variable in paymentObj
@@ -223,5 +231,20 @@ public class UserService {
                 .setParameter("user", getUsername())
                 .getResultList();
         return result;
+    }
+
+    //Returns appropriate currency symbol depending on user's chosen currency
+    public Character getCurrencySymbol() {
+        SystemUser userObj = (SystemUser) em.find(SystemUser.class, getUsername());
+        if (userObj.getCurrency() == Currency.GBP) {
+            return '£';
+        } else if (userObj.getCurrency() == Currency.EUR) {
+            return '€';
+        } else if (userObj.getCurrency() == Currency.USD) {
+            return '$';
+        //If error for some reason, return N
+        } else {
+            return 'N';
+        }
     }
 }

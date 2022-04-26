@@ -4,6 +4,7 @@
  */
 package com.webapps2022.entity;
 
+import com.webapps2022.resources.Currency;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -61,14 +64,20 @@ public class Payment implements Serializable {
     @NotNull
     Boolean fulfilled;
 
+    //Holds all involved users in a transaction (sender and recipient)
     @NotNull
     @ManyToMany(mappedBy = "payments")
     List<SystemUser> involvedUsers;
 
+    //The currency used to make this payment (GBP, EUR, or USD)
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    Currency currency;
+
     public Payment() {
     }
 
-    public Payment(Double amount, String sender, String recipient, Boolean fulfilled) {
+    public Payment(Currency currency, Double amount, String sender, String recipient, Boolean fulfilled) {
         BigDecimal bd = new BigDecimal(amount).setScale(2, RoundingMode.HALF_UP);
         amount = bd.doubleValue();
         this.amount = amount;
@@ -77,6 +86,7 @@ public class Payment implements Serializable {
         this.dateTime = OffsetDateTime.now();
         this.fulfilled = fulfilled;
         this.involvedUsers = new ArrayList<>();
+        this.currency = currency;
     }
 
     public Double getAmount() {
@@ -136,6 +146,14 @@ public class Payment implements Serializable {
         this.involvedUsers = involvedUsers;
     }
 
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
     @Override
     public int hashCode() {
         int hash = 5;
@@ -145,6 +163,7 @@ public class Payment implements Serializable {
         hash = 97 * hash + Objects.hashCode(this.recipient);
         hash = 97 * hash + Objects.hashCode(this.dateTime);
         hash = 97 * hash + Objects.hashCode(this.fulfilled);
+        hash = 97 * hash + Objects.hashCode(this.currency);
         return hash;
     }
 
@@ -170,6 +189,9 @@ public class Payment implements Serializable {
             return false;
         }
         if (!Objects.equals(this.fulfilled, other.fulfilled)) {
+            return false;
+        }
+        if (!Objects.equals(this.currency, other.currency)) {
             return false;
         }
         return Objects.equals(this.dateTime, other.dateTime);

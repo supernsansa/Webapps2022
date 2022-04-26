@@ -34,4 +34,8 @@ public class UserBean {
     public void setUsrSrv(UserService usrSrv) {
         this.usrSrv = usrSrv;
     }
+
+    public Character getCurrencySymbol() {
+        return usrSrv.getCurrencySymbol();
+    }
 }
