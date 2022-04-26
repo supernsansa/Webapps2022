@@ -5,6 +5,8 @@
 package com.webapps2022.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,8 +68,10 @@ public class Payment implements Serializable {
     public Payment() {
     }
 
-    public Payment(Double Amount, String sender, String recipient, Boolean fulfilled) {
-        this.amount = Amount;
+    public Payment(Double amount, String sender, String recipient, Boolean fulfilled) {
+        BigDecimal bd = new BigDecimal(amount).setScale(2, RoundingMode.HALF_UP);
+        amount = bd.doubleValue();
+        this.amount = amount;
         this.sender = sender;
         this.recipient = recipient;
         this.dateTime = OffsetDateTime.now();
@@ -80,7 +84,8 @@ public class Payment implements Serializable {
     }
 
     public void setAmount(Double Amount) {
-        this.amount = Amount;
+        BigDecimal bd = new BigDecimal(Amount).setScale(2, RoundingMode.HALF_UP);
+        this.amount = bd.doubleValue();
     }
 
     public String getSender() {

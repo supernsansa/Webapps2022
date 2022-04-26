@@ -3,10 +3,12 @@ package com.webapps2022.ejb;
 import com.webapps2022.entity.Payment;
 import com.webapps2022.entity.SystemUser;
 import com.webapps2022.entity.SystemUserGroup;
+import com.webapps2022.resources.Currency;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +32,8 @@ public class UserService {
     public UserService() {
     }
 
-    public void registerUser(String username, String userpassword) {
+    //Registers new user
+    public void registerUser(String username, String userpassword, Currency usercurrency) {
         try {
             SystemUser sys_user;
             SystemUserGroup sys_user_group;
@@ -42,7 +45,7 @@ public class UserService {
             BigInteger bigInt = new BigInteger(1, digest);
             String paswdToStoreInDB = bigInt.toString(16);
 
-            sys_user = new SystemUser(username, paswdToStoreInDB, "users");
+            sys_user = new SystemUser(username, paswdToStoreInDB, "users", usercurrency);
             sys_user_group = new SystemUserGroup(username, "users");
 
             em.persist(sys_user);
@@ -60,6 +63,7 @@ public class UserService {
         return username;
     }
 
+    //Returns balance of logged in user
     public Double getBalance() {
         SystemUser user = (SystemUser) em.find(SystemUser.class, getUsername());
         return user.getBalance();
@@ -165,6 +169,9 @@ public class UserService {
 
             //Change fulfilled variable in paymentObj
             paymentObj.setFulfilled(Boolean.TRUE);
+            //Update datetime variable in paymentObj
+            //TODO THRIFT timestamp implementation
+            paymentObj.setDateTime(OffsetDateTime.now());
             em.flush();
 
             return "Success";

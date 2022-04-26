@@ -5,7 +5,11 @@
 package com.webapps2022.jsf;
 
 import com.webapps2022.ejb.UserService;
+import com.webapps2022.resources.Currency;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;

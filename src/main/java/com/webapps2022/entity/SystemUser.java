@@ -1,6 +1,9 @@
 package com.webapps2022.entity;
 
+import com.webapps2022.resources.Currency;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -40,15 +43,19 @@ public class SystemUser implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "payment_id"))
     private List<Payment> payments;
 
+    //Users can choose what currency their money will be stored as
+    private Currency currency;
+
     public SystemUser() {
     }
 
-    public SystemUser(String username, String userpassword, String systemUserGroup) {
+    public SystemUser(String username, String userpassword, String systemUserGroup, Currency currency) {
         this.username = username;
         this.userpassword = userpassword;
         this.balance = 1000.00;
         this.systemUserGroup = systemUserGroup;
         this.payments = new ArrayList<>();
+        this.currency = currency;
     }
 
     public String getUsername() {
@@ -72,6 +79,8 @@ public class SystemUser implements Serializable {
     }
 
     public void setBalance(Double balance) {
+        BigDecimal bd = new BigDecimal(balance).setScale(2, RoundingMode.HALF_UP);
+        balance = bd.doubleValue();
         this.balance = balance;
     }
 
@@ -91,6 +100,14 @@ public class SystemUser implements Serializable {
         this.payments = payments;
     }
 
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
     @Override
     public int hashCode() {
         int hash = 5;
@@ -99,6 +116,7 @@ public class SystemUser implements Serializable {
         hash = 97 * hash + Objects.hashCode(this.balance);
         hash = 97 * hash + Objects.hashCode(this.systemUserGroup);
         hash = 97 * hash + Objects.hashCode(this.payments);
+        hash = 97 * hash + Objects.hashCode(this.currency);
         return hash;
     }
 
@@ -121,6 +139,9 @@ public class SystemUser implements Serializable {
             return false;
         }
         if (!Objects.equals(this.payments, other.payments)) {
+            return false;
+        }
+        if (!Objects.equals(this.currency, other.currency)) {
             return false;
         }
         return Objects.equals(this.username, other.username);

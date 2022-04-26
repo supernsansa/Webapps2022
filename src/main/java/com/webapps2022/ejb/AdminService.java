@@ -6,7 +6,15 @@ package com.webapps2022.ejb;
 
 import com.webapps2022.entity.Payment;
 import com.webapps2022.entity.SystemUser;
+import com.webapps2022.entity.SystemUserGroup;
+import com.webapps2022.resources.Currency;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
@@ -27,6 +35,33 @@ public class AdminService {
     public AdminService() {
     }
 
+    //Registers new admin
+    public void registerAdmin(String username, String userpassword) {
+        try {
+            SystemUser sys_user;
+            SystemUserGroup sys_user_group;
+
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            String passwd = userpassword;
+            md.update(passwd.getBytes("UTF-8"));
+            byte[] digest = md.digest();
+            BigInteger bigInt = new BigInteger(1, digest);
+            String paswdToStoreInDB = bigInt.toString(16);
+
+            sys_user = new SystemUser(username, paswdToStoreInDB, "admins", Currency.GBP);
+            sys_user.setBalance(0.0);
+            sys_user_group = new SystemUserGroup(username, "admins");
+
+            em.persist(sys_user);
+            em.persist(sys_user_group);
+            em.flush();
+
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException ex) {
+            Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    //Returns list of all registered users (and admins) in the database
     public List<SystemUser> getAllUsers() {
         List result = em.createNamedQuery("SystemUser.findAllUsers")
                 .getResultList();
