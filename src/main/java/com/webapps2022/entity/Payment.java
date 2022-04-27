@@ -58,7 +58,7 @@ public class Payment implements Serializable {
 
     //Date, time, and timezone of transaction
     @NotNull
-    OffsetDateTime dateTime;
+    String dateTime;
 
     //Whether or not the payment has happened yet (i.e. if the payment is a request or not)
     @NotNull
@@ -77,13 +77,13 @@ public class Payment implements Serializable {
     public Payment() {
     }
 
-    public Payment(Currency currency, Double amount, String sender, String recipient, Boolean fulfilled) {
+    public Payment(Currency currency, Double amount, String sender, String recipient, Boolean fulfilled, String dateTime) {
         BigDecimal bd = new BigDecimal(amount).setScale(2, RoundingMode.HALF_UP);
         amount = bd.doubleValue();
         this.amount = amount;
         this.sender = sender;
         this.recipient = recipient;
-        this.dateTime = OffsetDateTime.now();
+        this.dateTime = dateTime;
         this.fulfilled = fulfilled;
         this.involvedUsers = new ArrayList<>();
         this.currency = currency;
@@ -114,11 +114,11 @@ public class Payment implements Serializable {
         this.recipient = recipient;
     }
 
-    public OffsetDateTime getDateTime() {
+    public String getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(OffsetDateTime dateTime) {
+    public void setDateTime(String dateTime) {
         this.dateTime = dateTime;
     }
 
