@@ -17,6 +17,7 @@ public class DatetimeServer {
     public static DatetimeService.Processor processor;
     public static TServerTransport serverTransport;
     public static TServer server;
+    public static int port;
 
     public void start() {
         try {
@@ -51,7 +52,8 @@ public class DatetimeServer {
 
     @PreDestroy
     public void StopServer() {
-        System.out.println("Closing Thrift server");
+        System.out.println("Closing Thrift server (inside obj)");
         server.stop();
+        serverTransport.close();
     }
 }

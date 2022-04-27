@@ -20,6 +20,8 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.apache.thrift.transport.TServerSocket;
+import org.apache.thrift.transport.TTransportException;
 
 @Startup
 @Singleton
@@ -31,6 +33,11 @@ public class InitService {
 
     @PostConstruct
     public void init() {
+        System.out.println("At startup: Opening Thrift server");
+        //Start up thrift server
+        server = new DatetimeServer();
+        server.start();
+
         System.out.println("At startup: Initialising Datbase with admin1 account registered");
         //Register admin1 account when DB is initialized
         try {
@@ -61,10 +68,6 @@ public class InitService {
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException ex) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        //Start up thrift server
-        server = new DatetimeServer();
-        server.start();
     }
 
     @PreDestroy
