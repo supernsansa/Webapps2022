@@ -115,7 +115,7 @@ public class UserService {
             System.out.println(recipientObj.getBalance());
 
             //Add payment to DB and relevant entities
-            Payment paymentToSend = new Payment(senderObj.getCurrency(), amount, sender, recipient, true);
+            Payment paymentToSend = new Payment(senderObj.getCurrency(), amount, sender, recipient, true, "REPLACE WITH THRIFT");
             senderObj.getPayments().add(paymentToSend);
             recipientObj.getPayments().add(paymentToSend);
             em.persist(paymentToSend);
@@ -148,7 +148,7 @@ public class UserService {
             //Convert amount
             Double amountToSend = ConversionRestClient.runConversionRestOperation(recipientObj.getCurrency(), senderObj.getCurrency(), amount);
             //Persist payment record in db
-            Payment paymentToSend = new Payment(senderObj.getCurrency(), amountToSend, sender, recipient, false);
+            Payment paymentToSend = new Payment(senderObj.getCurrency(), amountToSend, sender, recipient, false, "REPLACE WITH THRIFT");
             em.persist(paymentToSend);
             em.flush();
             return "Success";
@@ -194,7 +194,7 @@ public class UserService {
             paymentObj.setFulfilled(Boolean.TRUE);
             //Update datetime variable in paymentObj
             //TODO THRIFT timestamp implementation
-            paymentObj.setDateTime(OffsetDateTime.now());
+            paymentObj.setDateTime("REPLACE WITH THRIFT");
             em.flush();
 
             return "Success";
@@ -262,7 +262,7 @@ public class UserService {
             return '€';
         } else if (userObj.getCurrency() == Currency.USD) {
             return '$';
-            //If error for some reason, return N
+            //If no case matches for some reason, return N
         } else {
             return 'N';
         }
