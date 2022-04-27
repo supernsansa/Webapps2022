@@ -22,7 +22,7 @@ public class LoginBean implements Serializable {
             //this method will disassociate the principal from the session (effectively logging him/her out)
             //Then, the user will be redirected to the index if logout is successful
             request.logout();
-            context.getExternalContext().redirect("/Webapps2022/");
+            context.getExternalContext().redirect("/webapps2022/");
         } catch (ServletException e) {
             context.addMessage(null, new FacesMessage("Logout failed."));
         } catch (IOException ex) {

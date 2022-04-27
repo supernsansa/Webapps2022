@@ -2,17 +2,21 @@
 <Scene Scope="Project" version="2">
     <Scope Scope="Faces Configuration Only"/>
     <Scope Scope="Project">
-        <Node id="users/viewFulfilledPayments.xhtml" x="150" y="150" zoom="true"/>
-        <Node id="error.xhtml" x="650" y="300" zoom="true"/>
-        <Node id="login.xhtml" x="650" y="150" zoom="true"/>
-        <Node id="users/user.xhtml" x="400" y="150" zoom="true"/>
-        <Node id="index.xhtml" x="150" y="600" zoom="true"/>
-        <Node id="users/viewPendingPayments.xhtml" x="400" y="450" zoom="true"/>
-        <Node id="users/sendMoney.xhtml" x="900" y="150" zoom="true"/>
-        <Node id="admins/admin.xhtml" x="1150" y="150" zoom="true"/>
-        <Node id="users/requestMoney.xhtml" x="400" y="300" zoom="true"/>
-        <Node id="users/viewNotifications.xhtml" x="150" y="300" zoom="true"/>
-        <Node id="registration.xhtml" x="150" y="450" zoom="true"/>
+        <Node id="error.xhtml" x="679" y="442" zoom="true"/>
+        <Node id="index.xhtml" x="150" y="600" zoom="false"/>
+        <Node id="users/viewPendingPayments.xhtml" x="788" y="79" zoom="true"/>
+        <Node id="users/sendMoney.xhtml" x="414" y="27" zoom="true"/>
+        <Node id="admins/admin.xhtml" x="1143" y="271" zoom="true"/>
+        <Node id="registration.xhtml" x="435" y="585" zoom="true"/>
+        <Node id="users/viewFulfilledPayments.xhtml" x="72" y="150" zoom="true"/>
+        <Node id="login.xhtml" x="864" y="450" zoom="true"/>
+        <Node id="admins/viewAllUsers.xhtml" x="1362" y="527" zoom="true"/>
+        <Node id="users/user.xhtml" x="448" y="243" zoom="true"/>
+        <Node id="admins/viewAllPaymentRequests.xhtml" x="1425" y="295" zoom="true"/>
+        <Node id="admins/adminRegistration.xhtml" x="1160" y="24" zoom="true"/>
+        <Node id="admins/viewAllFulfilledPayments.xhtml" x="1309" y="118" zoom="true"/>
+        <Node id="users/requestMoney.xhtml" x="657" y="9" zoom="true"/>
+        <Node id="users/viewNotifications.xhtml" x="68" y="8" zoom="true"/>
     </Scope>
     <Scope Scope="All Faces Configurations"/>
 </Scene>

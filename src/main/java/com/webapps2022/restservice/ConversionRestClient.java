@@ -10,8 +10,8 @@ import javax.ws.rs.core.MediaType;
 //Client class for conversion REST service
 public class ConversionRestClient {
     public static Double runConversionRestOperation(Currency currency1, Currency currency2, Double amount) {
-        System.out.println("Hello: MyRestServiceClient");
-        String webappURL = "http://localhost:10000/Webapps2022/";
+        System.out.println("ConversionRestClient initialized");
+        String webappURL = "http://localhost:10000/webapps2022/";
         String restPath = "restservice/conversion/" + currency1.name() + "/" + currency2.name() + "/" + String.valueOf(amount);
         String restapiURI = webappURL + restPath;
 

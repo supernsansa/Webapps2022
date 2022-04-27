@@ -34,8 +34,14 @@ public class UserService {
     }
 
     //Registers new user
-    public void registerUser(String username, String userpassword, Currency usercurrency) {
+    public String registerUser(String username, String userpassword, Currency usercurrency) {
         try {
+            //First check if user already exists
+            SystemUser existingObj = (SystemUser) em.find(SystemUser.class, username);
+            if (existingObj != null) {
+                return "A account with that username already exists";
+            }
+
             SystemUser sys_user;
             SystemUserGroup sys_user_group;
 
@@ -52,9 +58,11 @@ public class UserService {
             em.persist(sys_user);
             em.persist(sys_user_group);
             em.flush();
+            return "Success";
 
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException ex) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
+            return "Error Occured";
         }
     }
 
@@ -242,7 +250,7 @@ public class UserService {
             return '€';
         } else if (userObj.getCurrency() == Currency.USD) {
             return '$';
-        //If error for some reason, return N
+            //If error for some reason, return N
         } else {
             return 'N';
         }

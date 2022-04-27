@@ -3,9 +3,13 @@ package com.webapps2022.jsf;
 import com.webapps2022.ejb.AdminService;
 import com.webapps2022.ejb.UserService;
 import com.webapps2022.resources.Currency;
+import java.io.IOException;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 
 @Named
 @RequestScoped
@@ -25,15 +29,29 @@ public class RegistrationBean {
     }
 
     //Register normal user
-    public String register() {
-        usrSrv.registerUser(username, userpassword, usercurrency);
-        return "index";
+    public void register() throws IOException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String result = usrSrv.registerUser(username, userpassword, usercurrency);
+        if (!result.equals("Success")) {
+            context.addMessage(null, new FacesMessage(result));
+            return;
+        } //return "index";
+        else {
+            context.getExternalContext().redirect("/webapps2022/");
+        }
     }
 
     //Register an admin
-    public String registerAdmin() {
-        adminSrv.registerAdmin(username, userpassword);
-        return "admin";
+    public void registerAdmin() throws IOException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String result = adminSrv.registerAdmin(username, userpassword);
+        if (!result.equals("Success")) {
+            context.addMessage(null, new FacesMessage(result));
+            return;
+        } //return "admin";
+        else {
+            context.getExternalContext().redirect("/webapps2022/faces/admins/admin.xhtml");
+        }
     }
 
     public UserService getUsrSrv() {

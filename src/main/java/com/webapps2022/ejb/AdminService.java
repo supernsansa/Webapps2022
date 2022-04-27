@@ -36,8 +36,14 @@ public class AdminService {
     }
 
     //Registers new admin
-    public void registerAdmin(String username, String userpassword) {
+    public String registerAdmin(String username, String userpassword) {
         try {
+            //First check if user already exists
+            SystemUser existingObj = (SystemUser) em.find(SystemUser.class, username);
+            if (existingObj != null) {
+                return "A account with that username already exists";
+            }
+
             SystemUser sys_user;
             SystemUserGroup sys_user_group;
 
@@ -48,16 +54,16 @@ public class AdminService {
             BigInteger bigInt = new BigInteger(1, digest);
             String paswdToStoreInDB = bigInt.toString(16);
 
-            sys_user = new SystemUser(username, paswdToStoreInDB, "admins", Currency.GBP);
-            sys_user.setBalance(0.0);
+            sys_user = new SystemUser(username, paswdToStoreInDB, "admins", Currency.GBP, 0.0);
             sys_user_group = new SystemUserGroup(username, "admins");
 
             em.persist(sys_user);
             em.persist(sys_user_group);
             em.flush();
-
+            return "Success";
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException ex) {
             Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
+            return "Error Occurred";
         }
     }
 
