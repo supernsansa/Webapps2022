@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -23,6 +24,7 @@ import static javax.ejb.TransactionAttributeType.REQUIRED;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+@RolesAllowed("admins")
 @Stateless
 @TransactionAttribute(REQUIRED)
 public class AdminService {

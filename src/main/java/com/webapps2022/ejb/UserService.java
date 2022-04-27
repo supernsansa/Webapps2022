@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -21,6 +23,7 @@ import static javax.ejb.TransactionAttributeType.*;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+@PermitAll
 @Stateless
 @TransactionAttribute(REQUIRED)
 public class UserService {
@@ -73,12 +76,14 @@ public class UserService {
     }
 
     //Returns balance of logged in user
+    @RolesAllowed("users")
     public Double getBalance() {
         SystemUser user = (SystemUser) em.find(SystemUser.class, getUsername());
         return user.getBalance();
     }
 
     //Handles sending money from sender to recipient
+    @RolesAllowed("users")
     public String sendPayment(String sender, String recipient, Double amount) {
         try {
             SystemUser senderObj;
@@ -124,6 +129,7 @@ public class UserService {
     }
 
     //Handles sending payment request
+    @RolesAllowed("users")
     public String sendPaymentRequest(String sender, String recipient, Double amount) {
         try {
             SystemUser senderObj;
@@ -154,6 +160,7 @@ public class UserService {
     }
 
     //Handles accepting payment request
+    @RolesAllowed("users")
     public String acceptPaymentRequest(Long paymentId) {
         try {
             SystemUser senderObj;
@@ -199,6 +206,7 @@ public class UserService {
     }
 
     //Handles rejecting payment request
+    @RolesAllowed("users")
     public boolean rejectPaymentRequest(Long paymentId) {
         try {
             Payment paymentObj;
@@ -218,6 +226,7 @@ public class UserService {
     }
 
     //Retrieves all fulfilled payments (credits and debits) that a user has made
+    @RolesAllowed("users")
     public List<Payment> getFulfilledPayments() {
         List result = em.createNamedQuery("Payment.findAllFulfilledByName")
                 .setParameter("user", getUsername())
@@ -226,6 +235,7 @@ public class UserService {
     }
 
     //Retrieves all pending payment requests that a user has made
+    @RolesAllowed("users")
     public List<Payment> getPendingPayments() {
         List result = em.createNamedQuery("Payment.findAllPendingByName")
                 .setParameter("user", getUsername())
@@ -234,6 +244,7 @@ public class UserService {
     }
 
     //Retrieves all payment requests recieved by a user
+    @RolesAllowed("users")
     public List<Payment> getNotifPayments() {
         List result = em.createNamedQuery("Payment.findAllNotifsByName")
                 .setParameter("user", getUsername())
@@ -242,6 +253,7 @@ public class UserService {
     }
 
     //Returns appropriate currency symbol depending on user's chosen currency
+    @RolesAllowed("users")
     public Character getCurrencySymbol() {
         SystemUser userObj = (SystemUser) em.find(SystemUser.class, getUsername());
         if (userObj.getCurrency() == Currency.GBP) {
