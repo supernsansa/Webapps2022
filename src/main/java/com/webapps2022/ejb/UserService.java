@@ -5,11 +5,11 @@ import com.webapps2022.entity.SystemUser;
 import com.webapps2022.entity.SystemUserGroup;
 import com.webapps2022.resources.Currency;
 import com.webapps2022.restservice.ConversionRestClient;
+import com.webapps2022.thrift.DatetimeClient;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -115,7 +115,7 @@ public class UserService {
             System.out.println(recipientObj.getBalance());
 
             //Add payment to DB and relevant entities
-            Payment paymentToSend = new Payment(senderObj.getCurrency(), amount, sender, recipient, true, "REPLACE WITH THRIFT");
+            Payment paymentToSend = new Payment(senderObj.getCurrency(), amount, sender, recipient, true, currentDatetime());
             senderObj.getPayments().add(paymentToSend);
             recipientObj.getPayments().add(paymentToSend);
             em.persist(paymentToSend);
@@ -148,7 +148,7 @@ public class UserService {
             //Convert amount
             Double amountToSend = ConversionRestClient.runConversionRestOperation(recipientObj.getCurrency(), senderObj.getCurrency(), amount);
             //Persist payment record in db
-            Payment paymentToSend = new Payment(senderObj.getCurrency(), amountToSend, sender, recipient, false, "REPLACE WITH THRIFT");
+            Payment paymentToSend = new Payment(senderObj.getCurrency(), amountToSend, sender, recipient, false, currentDatetime());
             em.persist(paymentToSend);
             em.flush();
             return "Success";
@@ -194,7 +194,7 @@ public class UserService {
             paymentObj.setFulfilled(Boolean.TRUE);
             //Update datetime variable in paymentObj
             //TODO THRIFT timestamp implementation
-            paymentObj.setDateTime("REPLACE WITH THRIFT");
+            paymentObj.setDateTime(currentDatetime());
             em.flush();
 
             return "Success";
@@ -266,5 +266,12 @@ public class UserService {
         } else {
             return 'N';
         }
+    }
+
+    //Fetches current timestamp from thrift server
+    public String currentDatetime() {
+        DatetimeClient client = new DatetimeClient();
+        String datetime = client.fetchDatetime();
+        return datetime;
     }
 }
