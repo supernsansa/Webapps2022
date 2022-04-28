@@ -4,7 +4,6 @@
  */
 package com.webapps2022.ejb;
 
-import com.webapps2022.entity.Payment;
 import com.webapps2022.entity.SystemUser;
 import com.webapps2022.entity.SystemUserGroup;
 import com.webapps2022.resources.Currency;
@@ -13,8 +12,6 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
