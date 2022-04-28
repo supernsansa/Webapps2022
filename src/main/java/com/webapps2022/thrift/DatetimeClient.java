@@ -16,7 +16,7 @@ public class DatetimeClient {
         try {
             TTransport transport;
 
-            transport = new TSocket("localhost", 9090);
+            transport = new TSocket("localhost", DatetimeServer.port);
             transport.open();
 
             TProtocol protocol = new TBinaryProtocol(transport);

@@ -97,6 +97,11 @@ public class UserService {
             } //Check that sender and recipient are not the same user
             else if (senderObj.getUsername().equals(recipientObj.getUsername())) {
                 return "You cannot send money to yourself!";
+            } //Check that recipient is not admin
+            else if (recipientObj.getSystemUserGroup().equals("admins")) {
+                return "You cannot send money to an admin!";
+            } else if (amount <= 0) {
+                return "Payment amount must be more than 0";
             }
             System.out.println(senderObj.getUsername() + " " + recipientObj.getUsername());
 
@@ -143,6 +148,10 @@ public class UserService {
             } //Check that sender and recipient are not the same user
             else if (senderObj.getUsername().equals(recipientObj.getUsername())) {
                 return "You cannot request money from yourself!";
+            } else if (senderObj.getSystemUserGroup().equals("admins")) {
+                return "You cannot request money from an admin!";
+            } else if (amount <= 0) {
+                return "Requested amount must be more than 0";
             }
             System.out.println(senderObj.getUsername() + " " + recipientObj.getUsername());
             //Convert amount

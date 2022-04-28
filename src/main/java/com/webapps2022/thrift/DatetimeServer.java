@@ -4,6 +4,7 @@
  */
 package com.webapps2022.thrift;
 
+import java.net.ServerSocket;
 import javax.annotation.PreDestroy;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TServer.Args;
@@ -40,9 +41,12 @@ public class DatetimeServer {
 
     public void simple(DatetimeService.Processor processor) {
         try {
-            serverTransport = new TServerSocket(9090);
+            //Open socket at available port
+            ServerSocket serverSocket = new ServerSocket(0);
+            port = serverSocket.getLocalPort();
+            System.out.println(port);
+            serverTransport = new TServerSocket(serverSocket);
             server = new TSimpleServer(new Args(serverTransport).processor(processor));
-
             System.out.println("Starting the Thrift server in Thread " + Thread.currentThread().getId());
             server.serve();
         } catch (Exception e) {

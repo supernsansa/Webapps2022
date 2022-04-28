@@ -53,6 +53,18 @@
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
     </security-constraint>
+    <security-constraint>
+        <display-name>ForAll</display-name>
+        <web-resource-collection>
+            <web-resource-name>non-role pages</web-resource-name>
+            <description/>
+            <url-pattern>/faces/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <description/>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
     <login-config>
         <auth-method>FORM</auth-method>
         <realm-name>WebappsRealm</realm-name>

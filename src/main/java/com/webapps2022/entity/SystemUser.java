@@ -16,13 +16,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
 @Entity
-@NamedQuery(name = "SystemUser.findAllUsers",
-        query = "SELECT s FROM SystemUser s")
+@NamedQueries({
+    @NamedQuery(name = "SystemUser.findAllUsers",
+            query = "SELECT s FROM SystemUser s"),
+    @NamedQuery(name = "SystemUser.findUserByName",
+            query = "SELECT s FROM SystemUser s WHERE s.username = :user"),})
 public class SystemUser implements Serializable {
 
     @Id
