@@ -38,6 +38,8 @@ public class InitService {
     @Resource
     EJBContext ejbContext;
 
+    private boolean tableCreated;
+
     @PostConstruct
     public void init() {
         System.out.println("At startup: Opening Thrift server");
@@ -51,7 +53,7 @@ public class InitService {
             //End method if admin1 user already exists
             if (getAdmin1()) {
                 System.out.println("admin1 exists");
-            } else {
+            } else if (tableCreated) {
                 System.out.println("admin1 not found. Registering...");
                 SystemUser sys_user;
                 SystemUserGroup sys_user_group;
@@ -89,12 +91,15 @@ public class InitService {
             SystemUser result = (SystemUser) em.createNamedQuery("SystemUser.findUserByName")
                     .setParameter("user", "admin1")
                     .getSingleResult();
+            tableCreated = true;
             return result.getUsername().equals("admin1");
         } catch (NoResultException ex) {
             System.out.println("admin1 not found (inside method)");
+            tableCreated = true;
             return false;
         } catch (PersistenceException ex) {
             System.out.println("Table not created yet");
+            tableCreated = false;
             return false;
         }
     }
